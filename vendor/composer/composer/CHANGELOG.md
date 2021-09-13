@@ -1,3 +1,34 @@
+### [2.1.6] 2021-08-19
+
+  * Updated internal PHAR signatures to be SHA512 instead of SHA1
+  * Fixed uncaught exception handler regression (#10022)
+  * Fixed more PHP 8.1 deprecation warnings (#10036, #10038, #10061)
+  * Fixed corrupted zips in the cache from blocking installs until a cache clear, the bad archives are now deleted automatically on first failure (#10028)
+  * Fixed URL sanitizer handling of new github tokens (#10048)
+  * Fixed issue finding classes with very long heredocs in classmap autoload (#10050)
+  * Fixed proc_open being required for simple installs from zip, as well as diagnose (#9253)
+  * Fixed path repository bug causing symlinks to be left behind after a package is uninstalled (#10023)
+  * Fixed issue in 7-zip support on windows with certain archives (#10058)
+  * Fixed bootstrapping process to avoid loading the composer.json and plugins until necessary, speeding things up slightly (#10064)
+  * Fixed lib-openssl detection on FreeBSD (#10046)
+  * Fixed support for `ircs://` protocol for support.irc composer.json entries
+
+### [2.1.5] 2021-07-23
+
+  * Fixed `create-project` creating a `php:` directory in the directory it was executed in (#10020, #10021)
+  * Fixed curl downloader to respect default_socket_timeout if it is bigger than our default 300s (#10018)
+
+### [2.1.4] 2021-07-22
+
+  * Fixed PHP 8.1 deprecation warnings (#10008)
+  * Fixed support for working within UNC/WSL paths on Windows (#9993)
+  * Fixed 7-zip support to also be looked up on Linux/macOS as 7z or 7zz (#9951)
+  * Fixed repositories' `only`/`exclude` properties to avoid matching names as sub-strings of full package names (#10001)
+  * Fixed open_basedir regression from #9855
+  * Fixed schema errors being reported incorrectly in some conditions (#9986)
+  * Fixed `archive` command not working with async archive extraction
+  * Fixed `init` command being able to generate an invalid composer.json (#9986)
+
 ### [2.1.3] 2021-06-09
 
   * Add "symlink" option for "bin-compat" config to force symlinking even on WSL/Windows (#9959)
@@ -1217,6 +1248,9 @@
 
   * Initial release
 
+[2.1.6]: https://github.com/composer/composer/compare/2.1.5...2.1.6
+[2.1.5]: https://github.com/composer/composer/compare/2.1.4...2.1.5
+[2.1.4]: https://github.com/composer/composer/compare/2.1.3...2.1.4
 [2.1.3]: https://github.com/composer/composer/compare/2.1.2...2.1.3
 [2.1.2]: https://github.com/composer/composer/compare/2.1.1...2.1.2
 [2.1.1]: https://github.com/composer/composer/compare/2.1.0...2.1.1

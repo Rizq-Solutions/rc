@@ -139,6 +139,8 @@ class Application extends BaseApplication
         $io = $this->io = new ConsoleIO($input, $output, new HelperSet(array(
             new QuestionHelper(),
         )));
+
+        // Register error handler again to pass it the IO instance
         ErrorHandler::register($io);
 
         if ($input->hasParameterOption('--no-cache')) {
@@ -184,7 +186,10 @@ class Application extends BaseApplication
             }
         }
 
-        if (!$this->disablePluginsByDefault && !$this->hasPluginCommands && 'global' !== $commandName) {
+        // avoid loading plugins/initializing the Composer instance earlier than necessary if no plugin command is needed
+        $isComposerCommand = false !== $commandName;
+
+        if (!$isComposerCommand && !$this->disablePluginsByDefault && !$this->hasPluginCommands && 'global' !== $commandName) {
             try {
                 foreach ($this->getPluginCommands() as $command) {
                     if ($this->has($command->getName())) {
@@ -417,12 +422,16 @@ class Application extends BaseApplication
             } catch (\InvalidArgumentException $e) {
                 if ($required) {
                     $this->io->writeError($e->getMessage());
-                    exit(1);
+                    // TODO composer 2.3 simplify to $this->areExceptionsCaught()
+                    if (!method_exists($this, 'areExceptionsCaught') || $this->areExceptionsCaught()) {
+                        exit(1);
+                    }
+                    throw $e;
                 }
             } catch (JsonValidationException $e) {
-                $errors = ' - ' . implode(PHP_EOL . ' - ', $e->getErrors());
-                $message = $e->getMessage() . ':' . PHP_EOL . $errors;
-                throw new JsonValidationException($message);
+                if ($required) {
+                    throw $e;
+                }
             }
         }
 
